@@ -1,10 +1,12 @@
 #store data types as a list
 class Planet:
-    def __init__(self, position=None, mass=1, velocity=None, acc=0):
+    def __init__(self, position=None, mass=1, velocity=None, acc=None):
         if velocity is None:
             velocity = [0, 0]
         if position is None:
             position = [0, 0]
+        if acc is None:
+            acc = [0,0]
         self.position = position[:]
         self.mass = mass
         self.velocity = velocity[:]
