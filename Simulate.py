@@ -1,16 +1,15 @@
-import planets
+import Planets
 import math
-
-from planets import Planet
+from Planets import Planet
 
 
 #set a body's acc
-def eulerA(body1, lisBodies):
+def eulerA(body1, lisBodies, g_constant):
     #update acceleration
     acc = [0,0]
     for body2 in lisBodies:
         if body2 != body1:
-            accAdd = getAcceleration(body1, body2)
+            accAdd = getAcceleration(body1, body2, g_constant)
             acc[0] += accAdd[0]
             acc[1] += accAdd[1]
     body1.set_acc(acc)
@@ -30,9 +29,8 @@ def eulerP(body1):
 
 
 #used with eulerA
-def getAcceleration(body1, body2):
+def getAcceleration(body1, body2, g_constant):
         # this is where we set units
-    g_constant = 1
     if body1 != body2:
         d_list = getDistance(body1, body2)
 
@@ -61,16 +59,17 @@ def getDistance (body1, body2):
 
 
 class Simulate:
-    def __init__(self):
+    def __init__(self, g_constant = 100):
         self.lisBodies = []
         #gives the center of mass of the system
         self. CMsys = []
+        self.g_constant = g_constant
 
     #run simulation, enter the amount of time between calculations
     def run(self, timeStep):
         #update each body
         for body in self.lisBodies:
-            eulerA(body, self.lisBodies)
+            eulerA(body, self.lisBodies, self.g_constant)
 
         for body in self.lisBodies:
             eulerV(body)
@@ -81,6 +80,28 @@ class Simulate:
 
     def getBodies(self):
         return self.lisBodies
+
+    #return the location of the center of mass for the system
+    def getCOM(self):
+        xloc = 0
+        yloc = 0
+        mtotal = 0
+
+        for body in self.lisBodies:
+            mtotal += body.get_mass()
+            xloc += body.get_location()[0] * body.get_mass()
+            yloc += body.get_location()[1] * body.get_mass()
+        xloc = xloc / mtotal
+        yloc = yloc / mtotal
+
+        return [xloc, yloc]
+
+    def get_g_constant(self):
+        return self.g_constant
+
+    def set_g_constant(self, g_constant):
+        self.g_constant = g_constant
+
 
 # system = Simulate()
 # system.addBodies(Planet())
