@@ -135,6 +135,8 @@ save_design = Button(screen, 900, 550, 300, 50, text="Save Orbit", inactiveColou
 load_saved_design = Button(screen, 900, 600, 300, 50, text="Load Saved Orbit", inactiveColour=(200, 255, 200), hoverColour=(200, 255, 200), fontSize=18, onClick=lambda: load_saved_orbit())
 frames = 0
 
+last_event_mouse_down = False
+
 mass_list = []
 while True:
     if show_trail.value == False:
@@ -159,34 +161,39 @@ while True:
         draw_text("Magnitude of v0 is determined by distance dragged, not by speed dragged at.", pg.font.SysFont("Arial", 20), (255, 255, 255), 150, 100)
 
     events = pg.event.get()
+    #count to keep track of if last event was mouse button down
 
     for event in events:
 
         if event.type == pg.QUIT:
             pg.quit()
 
-        if event.type == pg.MOUSEBUTTONDOWN: 
+        elif event.type == pg.MOUSEBUTTONDOWN:
             pos_x0, pos_y0 = pg.mouse.get_pos()
-
+            last_event_mouse_down = False
             if pos_x0 < 900:
                 create_planet(pos_x0, pos_y0)
                 # for i in range(0, len(planet_list), 50):
                 #     mass_list.append(Slider(screen, 975, 500 + i, 200, 25, min=1, max = 1000, step=10))
+                last_event_mouse_down = True
 
-        if event.type == pg.MOUSEBUTTONUP:
+        elif event.type == pg.MOUSEBUTTONUP:
             pos_xf, pos_yf = pg.mouse.get_pos()
-            if set_v0_to_0.value == False and len(system.getBodies()) > 0:
+            if set_v0_to_0.value == False and len(system.getBodies()) > 0 and last_event_mouse_down:
                 get_initial_velocity(system.getBodies()[-1], pos_x0, pos_y0, pos_xf, pos_yf)
 
 
+
     if running_simulation == True:
+
         if system.run(0):
-            print('pass')
+            #check run if collision occurs. updates list if so
             temp_planet_lis = []
             for body in planet_list:
                 for body2 in system.lisBodies:
                     if body[1] == body2.get_color():
                         temp_planet_lis.append([body, body2.get_color()])
+            #add new planet from collision
             planet_list = temp_planet_lis[:]
             color = (randint(100, 255), randint(100, 255), randint(100, 255))
             planet_list.append([system.lisBodies[-1], color])
@@ -204,6 +211,6 @@ while True:
 
     for i in range(len(planet_list)):
         pg.draw.rect(screen, planet_list[i][1], planet_list[i][0], border_radius=3)
-    
     pygame_widgets.update(events)
     pg.display.update()
+
