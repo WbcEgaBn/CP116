@@ -1,8 +1,5 @@
-import planets
 import math
-
-from planets import Planet
-
+from planets import Planets
 
 #set a body's acc
 def eulerA(body1, lisBodies, g_constant):
@@ -76,22 +73,11 @@ class Simulate:
             eulerV(body)
             eulerP(body)
 
-        #check for collisions
-        for body1 in self.lisBodies:
-            for body2 in self.lisBodies:
-                if  self.check_collide(body1, body2):
-                    self.collide(body1, body2)
-                    return True
-        return False
-
     def addBodies(self, body):
         self.lisBodies.append(body)
 
     def getBodies(self):
         return self.lisBodies
-
-    def deleteBodies(self):
-        self.lisBodies = []
 
     #return the location of the center of mass for the system
     def getCOM(self):
@@ -114,7 +100,10 @@ class Simulate:
     def set_g_constant(self, g_constant):
         self.g_constant = g_constant
 
-    #check if bodies collide
+    def deleteBodies(self):
+        self.lisBodies = []
+
+        #check if bodies collide
     def check_collide(self, body1, body2):
         if body1 is not body2:
             if getDistance(body1, body2)[2] < 10:
@@ -126,7 +115,7 @@ class Simulate:
         pos3 = [body1.get_position()[0] + body2.get_position()[0] / 2, body1.get_position()[1] + body2.get_position()[1] / 2]
         mass3 = body1.get_mass() + body2.get_mass()
         vel3 = [(body1.get_velocity()[0] * body1.get_mass() + body2.get_velocity()[0] * body2.get_mass()) / mass3 , (body1.get_velocity()[1] * body1.get_mass() + body2.get_velocity()[1] * body2.get_mass()) / mass3 ]
-        body3 = Planet(pos3, mass3, vel3)
+        body3 = Planets(pos3, mass3, vel3)
         self.lisBodies.remove(body1)
         self.lisBodies.remove(body2)
         self.lisBodies.append(body3)
