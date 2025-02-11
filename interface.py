@@ -100,8 +100,18 @@ def trapezoid():
     planet_list.append([pg.Rect(x3 - (mass/2), y3 - (mass/2), mass*10, mass*10), (0, 0, 255)])
     planet_list.append([pg.Rect(x4 - (mass/2), y4 - (mass/2), mass*10, mass*10), (0, 255, 0)])
 
-def design_3():
+def two_body_orbit():
     clear_screen()
+    mass = 1
+    x1 = 350
+    y1 = 400
+    x2 = 550
+    y2 = 400
+
+    system.addBodies(planets.Planets(position=[x1 - (mass/2), y1 - (mass/2)], mass=mass, velocity=[0, 1]))
+    system.addBodies(planets.Planets(position=[x2 - (mass/2), y2 - (mass/2)], mass=mass, velocity=[0,-1]))
+    planet_list.append([pg.Rect(x1 - (mass/2), y1 - (mass/2), mass*10, mass*10), (255, 0, 0)])
+    planet_list.append([pg.Rect(x2 - (mass/2), y2 - (mass/2), mass*10, mass*10), (255, 255, 0)])
 
 def save_orbit():
     save_orbit_planet_list.clear()
@@ -130,7 +140,7 @@ t_const_display = TextBox(screen, 905, 400, 50, 50, fontSize=20)
 t_const_display.disable()
 design_1 = Button(screen, 900, 500, 100, 50, text="Scalene\nTriangle", inactiveColour=(255, 255, 0), hoverColour=(255, 255, 0), fontSize=18, onClick=lambda: scalene())
 design_2 = Button(screen, 1000, 500, 100, 50, text="Trapezoid", inactiveColour=(255, 0, 255), hoverColour=(255, 0, 255), fontSize=20, onClick=lambda: trapezoid())
-design_3 = Button(screen, 1100, 500, 100, 50, text="dsgn3", inactiveColour=(0, 255, 255), hoverColout=(0, 255, 255), fontSize=18, onClick=lambda: trapezoid())
+design_3 = Button(screen, 1100, 500, 100, 50, text="2 Body Orbit", inactiveColour=(0, 255, 255), hoverColout=(0, 255, 255), fontSize=18, onClick=lambda: two_body_orbit())
 save_design = Button(screen, 900, 550, 300, 50, text="Save Orbit", inactiveColour=(200, 200, 255), hoverColour=(200, 200, 255), fontSize=18, onClick=lambda: save_orbit())
 load_saved_design = Button(screen, 900, 600, 300, 50, text="Load Saved Orbit", inactiveColour=(200, 255, 200), hoverColour=(200, 255, 200), fontSize=18, onClick=lambda: load_saved_orbit())
 frames = 0
