@@ -96,8 +96,8 @@ class Simulate:
 
         for body in self.lisBodies:
             mtotal += body.get_mass()
-            xloc += body.get_location()[0] * body.get_mass()
-            yloc += body.get_location()[1] * body.get_mass()
+            xloc += body.get_position()[0] * body.get_mass()
+            yloc += body.get_position()[1] * body.get_mass()
         xloc = xloc / mtotal
         yloc = yloc / mtotal
 
