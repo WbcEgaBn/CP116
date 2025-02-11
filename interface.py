@@ -102,14 +102,14 @@ def trapezoid():
 
 def two_body_orbit():
     clear_screen()
-    mass = 1
-    x1 = 350
+    mass = 4
+    x1 = 300
     y1 = 400
-    x2 = 550
+    x2 = 600
     y2 = 400
 
-    system.addBodies(planets.Planets(position=[x1 - (mass/2), y1 - (mass/2)], mass=mass, velocity=[0, 1]))
-    system.addBodies(planets.Planets(position=[x2 - (mass/2), y2 - (mass/2)], mass=mass, velocity=[0,-1]))
+    system.addBodies(planets.Planets(position=[x1 - (mass/2), y1 - (mass/2)], mass=mass, velocity=[0, 2]))
+    system.addBodies(planets.Planets(position=[x2 - (mass/2), y2 - (mass/2)], mass=mass, velocity=[0,-2]))
     planet_list.append([pg.Rect(x1 - (mass/2), y1 - (mass/2), mass*10, mass*10), (255, 0, 0)])
     planet_list.append([pg.Rect(x2 - (mass/2), y2 - (mass/2), mass*10, mass*10), (255, 255, 0)])
 
@@ -130,19 +130,23 @@ def load_saved_orbit():
 set_v0_to_0 = Toggle(screen, 925, 180, 50, 25)
 show_trail = Toggle(screen, 925, 230, 50, 25)
 grav_const = TextBox(screen, 905, 300, 50, 50, fontSize=20)
-grav_const.disable() 
+grav_const.disable()
 grav_slider = Slider(screen, 975, 320, 200, 25, min=1, max = 1000, step=10)
 start = Button(screen, 900, 0, 300, 50, text="Start", inactiveColour=(50, 200, 50), hoverColour=(50, 200, 50), onClick=lambda: start_simulation())
 stop = Button(screen, 900, 50, 300, 50, text="Stop", inactiveColour=(255, 0, 0), hoverColour=(255, 0, 0), onClick=lambda: stop_simulation())
 reset = Button(screen, 900, 100, 300, 50, text="Reset", inactiveColour=(150, 150, 150), hoverColour=(150, 150, 150), onClick=lambda: clear_screen())
+
 t_const = Slider(screen, 975, 420, 200, 25, min=0.01, max = 0.1, step=0.01, initial=0.05)
 t_const_display = TextBox(screen, 905, 400, 50, 50, fontSize=20)
-t_const_display.disable()
-design_1 = Button(screen, 900, 500, 100, 50, text="Scalene\nTriangle", inactiveColour=(255, 255, 0), hoverColour=(255, 255, 0), fontSize=18, onClick=lambda: scalene())
-design_2 = Button(screen, 1000, 500, 100, 50, text="Trapezoid", inactiveColour=(255, 0, 255), hoverColour=(255, 0, 255), fontSize=20, onClick=lambda: trapezoid())
-design_3 = Button(screen, 1100, 500, 100, 50, text="2 Body Orbit", inactiveColour=(0, 255, 255), hoverColout=(0, 255, 255), fontSize=18, onClick=lambda: two_body_orbit())
-save_design = Button(screen, 900, 550, 300, 50, text="Save Orbit", inactiveColour=(200, 200, 255), hoverColour=(200, 200, 255), fontSize=18, onClick=lambda: save_orbit())
-load_saved_design = Button(screen, 900, 600, 300, 50, text="Load Saved Orbit", inactiveColour=(200, 255, 200), hoverColour=(200, 255, 200), fontSize=18, onClick=lambda: load_saved_orbit())
+
+t_step = Slider(screen, 975, 520, 200, 25, min=.1, max = 5.0, step = 0.25, initial = 1)
+t_step_display = TextBox(screen, 905, 500, 50, 50, fontSize=20)
+
+design_1 = Button(screen, 900, 570, 100, 50, text="Scalene\nTriangle", inactiveColour=(255, 255, 0), hoverColour=(255, 255, 0), fontSize=18, onClick=lambda: scalene())
+design_2 = Button(screen, 1000, 570, 100, 50, text="Trapezoid", inactiveColour=(255, 0, 255), hoverColour=(255, 0, 255), fontSize=20, onClick=lambda: trapezoid())
+design_3 = Button(screen, 1100, 570, 100, 50, text="2 Body Orbit", inactiveColour=(0, 255, 255), hoverColout=(0, 255, 255), fontSize=18, onClick=lambda: two_body_orbit())
+save_design = Button(screen, 900, 620, 300, 50, text="Save Orbit", inactiveColour=(200, 200, 255), hoverColour=(200, 200, 255), fontSize=18, onClick=lambda: save_orbit())
+load_saved_design = Button(screen, 900, 670, 300, 50, text="Load Saved Orbit", inactiveColour=(200, 255, 200), hoverColour=(200, 255, 200), fontSize=18, onClick=lambda: load_saved_orbit())
 frames = 0
 
 last_event_mouse_down = False
@@ -152,7 +156,7 @@ while True:
     if show_trail.value == False:
         screen.fill((0, 0, 0))
 
-    clock.tick(60)
+    clock.tick(60 / system.get_time_step())
     pg.draw.rect(screen, (255, 255, 255), [900, 0, 300, 900], 0) # change 4th num
 
     draw_text("Set v0 = 0", pg.font.SysFont("Arial", 20), (0, 0, 0), 1000, 180)
@@ -160,6 +164,16 @@ while True:
     draw_text("Gravitational Constant ↓ ", pg.font.SysFont("Arial", 20), (0, 0, 0), 970, 280)
     grav_const.setText(grav_slider.getValue())
     system.set_g_constant(grav_slider.getValue())
+
+    #stuff for time_step
+    draw_text("Time Step ↓ ", pg.font.SysFont("Arial", 20), (0, 0, 0), 1020, 485)
+    t_step_display.setText(round(t_step.getValue(), 2))
+    system.set_time_step(round(t_step.getValue(), 2))
+
+    #update time
+    time_display = TextBox(screen, 10, 10, 150, 40, fontSize=20)
+    time_display.setText(f'Time: {round(system.get_time(), 0)}')
+
 
     frames += 1
 
@@ -171,7 +185,6 @@ while True:
         draw_text("Magnitude of v0 is determined by distance dragged, not by speed dragged at.", pg.font.SysFont("Arial", 20), (255, 255, 255), 150, 100)
 
     events = pg.event.get()
-    #count to keep track of if last event was mouse button down
 
     for event in events:
 
@@ -196,7 +209,7 @@ while True:
 
     if running_simulation == True:
 
-        if system.run(0):
+        if system.run():
             #check run if collision occurs. updates list if so
             temp_planet_lis = []
             for body in planet_list:

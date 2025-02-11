@@ -13,16 +13,16 @@ def eulerA(body1, lisBodies, g_constant):
     body1.set_acc(acc)
 
 #set a bodies velocity
-def eulerV(body1):
-    vel = [body1.get_velocity()[0] + body1.get_acc()[0], body1.get_velocity()[1] + body1.get_acc()[1]]
+def eulerV(body1, time_step):
+    vel = [body1.get_velocity()[0] + body1.get_acc()[0] * time_step, body1.get_velocity()[1] + body1.get_acc()[1] * time_step]
     body1.set_velocity(vel)
 
 #set a bodies position
-def eulerP(body1):
+def eulerP(body1, time_step):
     #update position
     pos  = body1.get_position()
-    pos[0] += body1.get_velocity()[0]
-    pos[1] += body1.get_velocity()[1]
+    pos[0] += body1.get_velocity()[0] * time_step
+    pos[1] += body1.get_velocity()[1] * time_step
     body1.set_position(pos)
 
 
@@ -57,26 +57,30 @@ def getDistance (body1, body2):
 
 
 class Simulate:
-    def __init__(self, g_constant = 100):
+    def __init__(self, g_constant = 100, time_step = 1):
         self.lisBodies = []
         #gives the center of mass of the system
         self. CMsys = []
         self.g_constant = g_constant
+        self.time_step = time_step
+        self.time = 0
 
     #run simulation, enter the amount of time between calculations
-    def run(self, timeStep):
+    def run(self):
         #update each body
         for body in self.lisBodies:
             eulerA(body, self.lisBodies, self.g_constant)
 
         for body in self.lisBodies:
-            eulerV(body)
-            eulerP(body)
+            eulerV(body, self.time_step)
+            eulerP(body, self.time_step)
 
         for body1 in self.lisBodies:
             for body2 in self.lisBodies:
                 if self.check_collide(body1, body2):
                     return self.collide(body1, body2)
+
+        self.time += self.time_step
 
     def addBodies(self, body):
         self.lisBodies.append(body)
@@ -127,6 +131,14 @@ class Simulate:
         print('collide')
         return True
 
+    def get_time_step(self):
+        return self.time_step
+
+    def set_time_step(self, time_step):
+        self.time_step = time_step
+
+    def get_time(self):
+        return self.time
 
 # system = Simulate()
 # system.addBodies(Planet())
