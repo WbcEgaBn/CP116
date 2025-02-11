@@ -27,7 +27,7 @@ def create_planet(pos_x, pos_y):
 
     mass = 1
     color = (randint(100, 255), randint(100, 255), randint(100, 255))
-    math_planet = planets.Planets(position=[pos_x - (mass/2), pos_y - (mass/2)], mass=mass)
+    math_planet = planets.Planets(position=[pos_x - (mass/2), pos_y - (mass/2)], mass=mass, color = color)
     system.addBodies(math_planet)
     planet = pg.Rect(pos_x - (mass/2), pos_y - (mass/2), mass*10, mass*10)
     planet_list.append([planet, color])
@@ -178,8 +178,21 @@ while True:
             if set_v0_to_0.value == False and len(system.getBodies()) > 0:
                 get_initial_velocity(system.getBodies()[-1], pos_x0, pos_y0, pos_xf, pos_yf)
 
+
     if running_simulation == True:
-        system.run(0)
+        if system.run(0):
+            print('pass')
+            temp_planet_lis = []
+            for body in planet_list:
+                for body2 in system.lisBodies:
+                    if body[1] == body2.get_color():
+                        temp_planet_lis.append([body, body2.get_color()])
+            planet_list = temp_planet_lis[:]
+            color = (randint(100, 255), randint(100, 255), randint(100, 255))
+            planet_list.append([system.lisBodies[-1], color])
+            system.lisBodies[-1].set_color(color)
+
+
         int = 0
         planet_list_math = system.getBodies()
 

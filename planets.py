@@ -1,6 +1,6 @@
 #store data types as a list
-class Planet:
-    def __init__(self, position=None, mass=1, velocity=None, acc=None):
+class Planets:
+    def __init__(self, position=None, mass=1, velocity=None, acc=None, color = None):
         if velocity is None:
             velocity = [0, 0]
         if position is None:
@@ -11,6 +11,13 @@ class Planet:
         self.mass = mass
         self.velocity = velocity[:]
         self.acc = acc[:]
+        self.color = color
+
+    def get_color(self):
+        return self.color
+
+    def set_color(self, color):
+        self.color = color
 
     def get_position(self):
         return self.position[:]
@@ -24,6 +31,7 @@ class Planet:
 
     def get_velocity(self):
         return self.velocity[:]
+
     def set_velocity(self, velocity):
         self.velocity = velocity[:]
 

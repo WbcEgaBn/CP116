@@ -73,6 +73,11 @@ class Simulate:
             eulerV(body)
             eulerP(body)
 
+        for body1 in self.lisBodies:
+            for body2 in self.lisBodies:
+                if self.check_collide(body1, body2):
+                    return self.collide(body1, body2)
+
     def addBodies(self, body):
         self.lisBodies.append(body)
 
@@ -112,13 +117,15 @@ class Simulate:
 
     #use if the bodies did collide
     def collide(self, body1, body2):
-        pos3 = [body1.get_position()[0] + body2.get_position()[0] / 2, body1.get_position()[1] + body2.get_position()[1] / 2]
+        pos3 = [(body1.get_position()[0] + body2.get_position()[0]) / 2, (body1.get_position()[1] + body2.get_position()[1]) / 2]
         mass3 = body1.get_mass() + body2.get_mass()
         vel3 = [(body1.get_velocity()[0] * body1.get_mass() + body2.get_velocity()[0] * body2.get_mass()) / mass3 , (body1.get_velocity()[1] * body1.get_mass() + body2.get_velocity()[1] * body2.get_mass()) / mass3 ]
         body3 = Planets(pos3, mass3, vel3)
         self.lisBodies.remove(body1)
         self.lisBodies.remove(body2)
         self.lisBodies.append(body3)
+        print('collide')
+        return True
 
 
 # system = Simulate()
