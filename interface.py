@@ -272,13 +272,13 @@ while True:
             planet_x = planet.get_position()[0]
             planet_y = planet.get_position()[1]
             print(planet_list[integer])
-            planet_list[integer] = [pg.Rect(planet_x, planet_y, 10, 10), planet_list[integer][1]]
+            planet_list[integer] = [pg.Rect(planet_x, planet_y, planet.get_mass() * 10, planet.get_mass() * 10), planet_list[integer][1]]
             integer += 1
 
     #redraw system
     for i in range(len(planet_list)):
-        print(planet_list[i][0])
-        pg.draw.rect(screen, planet_list[i][1], planet_list[i][0], border_radius=3)
+        print(planet_list[i][1], planet_list[i][0])
+        pg.draw.rect(screen, planet_list[i][1], planet_list[i][0], border_radius= int((system.getBodies()[i].get_mass() * 3) ** 2))
         if cm_value.value:
             pg.draw.rect(screen, (255,255,255), pg.Rect(system.getCOM()[0], system.getCOM()[1],5,5), border_radius = 3)
 

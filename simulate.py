@@ -115,7 +115,7 @@ class Simulate:
         #check if bodies collide
     def check_collide(self, body1, body2):
         if body1 is not body2:
-            if getDistance(body1, body2)[2] < 10:
+            if getDistance(body1, body2)[2] < 10 * (body1.get_mass() + body2.get_mass()) / 4:
                 return True
         return False
 
