@@ -112,10 +112,16 @@ class Simulate:
     def deleteBodies(self):
         self.lisBodies = []
 
-        #check if bodies collide
+    def set_collide_const(self, collide_const):
+        self.collide_const = collide_const
+
+    def get_collide_const(self):
+        return self.collide_const
+    
+    #check if bodies collide
     def check_collide(self, body1, body2):
         if body1 is not body2:
-            if getDistance(body1, body2)[2] < 10 * (body1.get_mass() + body2.get_mass()) / 4:
+            if getDistance(body1, body2)[2] < self.get_collide_const():
                 return True
         return False
 
@@ -128,7 +134,6 @@ class Simulate:
         self.lisBodies.remove(body1)
         self.lisBodies.remove(body2)
         self.lisBodies.append(body3)
-        print('collide')
         return True
 
     def get_time_step(self):
@@ -139,18 +144,6 @@ class Simulate:
 
     def get_time(self):
         return self.time
-
-# system = Simulate()
-# system.addBodies(Planet())
-# system.addBodies(Planet(position=[5,5]))
-# system.addBodies(Planet(position=[-5,5]))
-# system.addBodies(Planet(position=[-5,-5]))
-# system.addBodies(Planet(position=[5,-5]))
-#
-# for i in range (4):
-#     system.run(1)
-#     for body in system.getBodies():
-#         print(body.get_position())
-#         print(system.get)
-
-
+    
+    def set_time(self, time):
+        self.time = time
