@@ -1,6 +1,5 @@
 import pygame as pg
 import pygame_widgets
-from pygame.display import toggle_fullscreen
 from pygame_widgets.button import Button
 from pygame_widgets.toggle import Toggle
 from pygame_widgets.slider import Slider
@@ -9,11 +8,12 @@ import simulate
 import planets
 from random import randint
 
-#base variables
+#start program objects
 pg.init()
 screen = pg.display.set_mode((1200, 820))
 clock = pg.time.Clock()
 
+#base variables
 system = simulate.Simulate()
 
 planet_list = []
@@ -80,9 +80,10 @@ def scalene():
     y1 = 484
     y2 = 533
     y3 = 248
-    system.addBodies(planets.Planets(position=[x1 - (mass/2), y1 - (mass/2)], mass=mass))
-    system.addBodies(planets.Planets(position=[x2 - (mass/2), y2 - (mass/2)], mass=mass))
-    system.addBodies(planets.Planets(position=[x3 - (mass/2), y3 - (mass/2)], mass=mass))
+    system.deleteBodies()
+    system.addBodies(planets.Planets(position=[x1 - (mass/2), y1 - (mass/2)], mass=mass, color=(255, 0, 0)))
+    system.addBodies(planets.Planets(position=[x2 - (mass/2), y2 - (mass/2)], mass=mass, color=(255, 255, 0)))
+    system.addBodies(planets.Planets(position=[x3 - (mass/2), y3 - (mass/2)], mass=mass, color=(0, 0, 255)))
     planet_list.append([pg.Rect(x1 - (mass/2), y1 - (mass/2), mass*10, mass*10), (255, 0, 0)])
     planet_list.append([pg.Rect(x2 - (mass/2), y2 - (mass/2), mass*10, mass*10), (255, 255, 0)])
     planet_list.append([pg.Rect(x3 - (mass/2), y3 - (mass/2), mass*10, mass*10), (0, 0, 255)])
@@ -99,10 +100,11 @@ def trapezoid():
     y3 = 650
     x4 = 650 * 0.7
     y4 = 650 * 0.8
-    system.addBodies(planets.Planets(position=[x1 - (mass/2), y1 - (mass/2)], mass=mass))
-    system.addBodies(planets.Planets(position=[x2 - (mass/2), y2 - (mass/2)], mass=mass))
-    system.addBodies(planets.Planets(position=[x3 - (mass/2), y3 - (mass/2)], mass=mass))
-    system.addBodies(planets.Planets(position=[x4 - (mass/2), y4 - (mass/2)], mass=mass))
+    system.deleteBodies()
+    system.addBodies(planets.Planets(position=[x1 - (mass/2), y1 - (mass/2)], mass=mass, color=(255, 0, 0)))
+    system.addBodies(planets.Planets(position=[x2 - (mass/2), y2 - (mass/2)], mass=mass, color=(255, 255, 0)))
+    system.addBodies(planets.Planets(position=[x3 - (mass/2), y3 - (mass/2)], mass=mass, color=(0, 0, 255)))
+    system.addBodies(planets.Planets(position=[x4 - (mass/2), y4 - (mass/2)], mass=mass, color=(0, 255, 0)))
     planet_list.append([pg.Rect(x1 - (mass/2), y1 - (mass/2), mass*10, mass*10), (255, 0, 0)])
     planet_list.append([pg.Rect(x2 - (mass/2), y2 - (mass/2), mass*10, mass*10), (255, 255, 0)])
     planet_list.append([pg.Rect(x3 - (mass/2), y3 - (mass/2), mass*10, mass*10), (0, 0, 255)])
@@ -117,8 +119,10 @@ def two_body_orbit():
     x2 = 600
     y2 = 400
 
-    system.addBodies(planets.Planets(position=[x1 - (mass/2), y1 - (mass/2)], mass=mass, velocity=[0, 2]))
-    system.addBodies(planets.Planets(position=[x2 - (mass/2), y2 - (mass/2)], mass=mass, velocity=[0,-2]))
+    system.deleteBodies()
+    planet_list.clear()
+    system.addBodies(planets.Planets(position=[x1 - (mass/2), y1 - (mass/2)], mass=mass, velocity=[0, 2], color=(255, 0, 0)))
+    system.addBodies(planets.Planets(position=[x2 - (mass/2), y2 - (mass/2)], mass=mass, velocity=[0,-2], color=(255, 255, 0)))
     planet_list.append([pg.Rect(x1 - (mass/2), y1 - (mass/2), mass*10, mass*10), (255, 0, 0)])
     planet_list.append([pg.Rect(x2 - (mass/2), y2 - (mass/2), mass*10, mass*10), (255, 255, 0)])
 
@@ -176,7 +180,7 @@ load_saved_design = Button(screen, 900, 770, 300, 50, text="Load Saved Orbit", i
 frames = 0
 
 #show center of mass
-cm_value = Toggle(screen, 925,675, 50,25)
+cm_value = Toggle(screen, 250,25, 50,25)
 
 last_event_mouse_down = False
 
@@ -255,12 +259,13 @@ while True:
             for body in planet_list:
                 for body2 in system.lisBodies:
                     if body[1] == body2.get_color():
-                        temp_planet_lis.append([body, body2.get_color()])
+                        temp_planet_lis.append([body2, body2.get_color()])
             #add new planet from collision
             planet_list = temp_planet_lis[:]
             color = (randint(100, 255), randint(100, 255), randint(100, 255))
             planet_list.append([system.lisBodies[-1], color])
             system.lisBodies[-1].set_color(color)
+
 
 
         #keep track of index
@@ -271,13 +276,18 @@ while True:
         for planet in planet_list_math: 
             planet_x = planet.get_position()[0]
             planet_y = planet.get_position()[1]
-            print(planet_list[integer])
-            planet_list[integer] = [pg.Rect(planet_x, planet_y, planet.get_mass() * 10, planet.get_mass() * 10), planet_list[integer][1]]
+            temp = [pg.Rect(planet_x, planet_y, planet.get_mass() * 10, planet.get_mass() * 10), planet_list[integer][1]]
+            planet_list[integer] = temp
             integer += 1
+
+        #
+        # print('///sys')
+        # print(system.getBodies())
+        # print('///planet')
+        # print(planet_list)
 
     #redraw system
     for i in range(len(planet_list)):
-        print(planet_list[i][1], planet_list[i][0])
         pg.draw.rect(screen, planet_list[i][1], planet_list[i][0], border_radius= int((system.getBodies()[i].get_mass() * 3) ** 2))
         if cm_value.value:
             pg.draw.rect(screen, (255,255,255), pg.Rect(system.getCOM()[0], system.getCOM()[1],5,5), border_radius = 3)
