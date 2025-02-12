@@ -36,6 +36,10 @@ This slider allows the user to user to change the amount of gravity planets expe
 The yeet constant determines at what velocity a planet should start at depending on how far a click is dragged.
 #### Time Step
 Time between each new calculation will change with this slider.
+#### Mass
+This changes the mass of the next planet placed.
+#### Collison Constant
+This changes the distance between two planets needed for them to collide.
 #### Scalene Triangle, Trapezoid, and 3 Body Orbit
 These buttons load in hardcoded initial planet data. When a button is pressed, the screen is cleared beforehand.
 #### Save Orbit
